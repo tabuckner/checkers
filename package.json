@@ -1,0 +1,22 @@
+{
+  "name": "checkers",
+  "version": "0.0.1",
+  "description": "Coding Challenge",
+  "main": "index.js",
+  "author": "tabuckner",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "@types/jest": "^24.0.11",
+    "babel-jest": "^24.6.0",
+    "jest": "^24.6.0",
+    "jest-cli": "^24.6.0"
+  },
+  "scripts": {
+    "test": "jest --config jest.config.js",
+    "test:watch": "jest --watchAll --config jest.config.js"
+  },
+  "dependencies": {}
+}
