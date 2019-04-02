@@ -1,4 +1,6 @@
 export const COLORS_ENUM = {
-  white: 'white',
-  black: 'white'
+  locked: -1,
+  empty: 0,
+  white: 1,
+  black: 2
 };
