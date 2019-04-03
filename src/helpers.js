@@ -19,4 +19,18 @@ export default class Helpers {
   static isPositionEmpty(positionValue) {
     return positionValue === COLORS_ENUM.empty;
   }
+
+  /**
+   * Given an [x,y] pair and a board size, returns if the coords are out of bounds.
+   * @param {Array<number>} position [x,y] coords
+   * @param {number} boardSize size of the board
+   */
+  static isPositionOutOfBounds(position, boardSize) {
+    for (let coord of position) {
+      if (coord > boardSize || coord < 0) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

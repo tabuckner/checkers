@@ -1,12 +1,8 @@
 import GamePiece from "./game-piece";
 import GameBoard from "./game-board";
-import {
-  COLORS_ENUM
-} from "./constants/colors.enum";
-import {
-  BOARD_SIZE
-} from "./constants/board-size";
+import { COLORS_ENUM } from "./constants/colors.enum";
 import Helpers from "./helpers";
+import { BOARD_SIZE } from "./constants/board-size";
 
 /**
  * **PROMPT**
@@ -30,11 +26,12 @@ import Helpers from "./helpers";
  * [Assumptions]
  * - All pieces are in their first directional paths, (e.g. have not reached the opponents edge yet).
  * - We do not need to handle the 'kinging' mechanic.
+ * - Prompt seems to indicate a single turn.
  * 
  */
 
 export default class CheckersChecker {
-  _boardSize;
+  _boardSize = BOARD_SIZE;
   /** @type {Array<GamePiece>} */
   gamePieces = [];
   /** @type {GameBoard} */
@@ -56,6 +53,7 @@ export default class CheckersChecker {
     if (!board || !position) {
       throw new Error('Board and Position must be provided.')
     }
+    const returnArray = [];
     const xPos = position[0];
     const yPos = position[1];
     const pointValue = board[xPos][yPos];
@@ -63,10 +61,40 @@ export default class CheckersChecker {
       return;
     }
     if (pointValue === 0) {
-      return [];
+      return returnArray;
     }
     const potentialCells = this._getPotentialCells(board, position);
-    const opponentCells = this._filterOpponentCells(potentialCells, pointValue, board);
+    const adjacentOpponentCells = this._filterOpponentCells(potentialCells, pointValue, board);
+    if (adjacentOpponentCells.length === 0) {
+      return returnArray;
+    }
+
+    for (let adjacentOpponentCell of adjacentOpponentCells) {
+      console.log(adjacentOpponentCell);
+      const optionArray = [];
+      // get postJumpPosition coordinates
+      const opponentXPos = adjacentOpponentCell[0];
+      const opponentYPos = adjacentOpponentCell[1];
+      const postJumpXPos = ((opponentXPos - xPos) * 2) + xPos;
+      const postJumpyPos = ((opponentYPos - yPos) * 2) + yPos;
+      const postJumpCoords = [postJumpXPos, postJumpyPos];
+      const postJumpIsOutOfBounds = Helpers.isPositionOutOfBounds(postJumpCoords, this._boardSize);
+      console.log({postJumpIsOutOfBounds, postJumpCoords})
+
+      // if the postJumpPosition is out of bounds do nothing
+      if (!postJumpIsOutOfBounds) {
+        // push opponentCell onto optionArray
+        optionArray.push(adjacentOpponentCell);
+        console.log({optionArray});
+        // push it onto the options array
+        optionArray.push(postJumpCoords);
+        console.log({optionArray});
+        // push onto return array
+        returnArray.push(optionArray);
+      }
+    }
+    console.log(returnArray)
+    return returnArray;
   }
 
   /**

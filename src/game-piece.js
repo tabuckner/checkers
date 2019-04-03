@@ -22,7 +22,7 @@ export default class GamePiece {
   }
 
   checkCoordinateBoundary(coordinate) {
-    if (coordinate > this._boardSize) {
+    if (coordinate > this._boardSize || coordinate < 0) {
       throw new Error('Coordinate exceeds grid boundaries.');
     }
     return coordinate;

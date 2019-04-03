@@ -47,10 +47,30 @@ describe('CheckersChecker', () => {
       }).toThrow();
     });
 
-    it('should return an empty array if there are no valid jumps', () => {
-      
+    it('should return an empty array if there are adjacent opponents', () => {
+      spyOn(instance, '_getPotentialCells').and.returnValue(true);
+      spyOn(instance, '_filterOpponentCells').and.returnValue([]);
+      const mockGamePiece = new GamePiece(0, 0, COLORS_ENUM.black);
+      const mockBoard = new GameBoard([mockGamePiece]);
+      const mockPosition = [0, 0];
+      const testEval = instance.getValidJumps(mockBoard, mockPosition);
+      expect(testEval.length).toBe(0);
     });
 
+    it('should return an array of nearbyOpponents and postJumpPosition', () => {
+      const mockPieces = [];
+      [[0,0], [0,2], [2,0], [2,2]].map((o) => {
+        const mockPiece = new GamePiece(o[0], o[1], COLORS_ENUM.white);
+        mockPieces.push(mockPiece);
+      });
+      const playerPiece = new GamePiece(1, 1, COLORS_ENUM.black);
+      mockPieces.push(playerPiece);
+      console.warn(mockPieces);
+      const mockBoard = new GameBoard(mockPieces, 4);
+      console.warn(mockBoard);
+      const testEval = instance.getValidJumps(mockBoard, [1, 1], 4);
+      console.warn(testEval);
+    });
   });
 
   describe('#_getPotentialCells', () => {
