@@ -8,13 +8,13 @@ export default class GamePiece {
    * @param {string} color COLORS_ENUM
    */
   constructor(xPos, yPos, color, boardSize = BOARD_SIZE) {
+    this._boardSize = boardSize;
     this.xPos = this.checkCoordinateBoundary(xPos);
     this.yPos = this.checkCoordinateBoundary(yPos);
-    this.color = this.checkColorParam(color);
-    this._boardSize = boardSize;
+    this.color = this._checkColorParam(color);
   }
 
-  checkColorParam(colorParam) {
+  _checkColorParam(colorParam) {
     if (Object.values(COLORS_ENUM).indexOf(colorParam) < 0) {
       throw new Error('Color param provided is invalid. Must be `white` or `black`');
     }

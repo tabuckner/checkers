@@ -10,21 +10,21 @@ export default class GameBoard {
    * @param {number} boardSize one dimensional size of grid
    * @param {Array<GamePiece>} gamePieces array of GamePiece
    */
-  constructor(boardSize = BOARD_SIZE, gamePieces = [], board = []) {
+  constructor(gamePieces = [], boardSize = BOARD_SIZE, board = []) {
     this._initializeBoard(boardSize, board);
     this._populateBoard(gamePieces);
     return this.board;
   }
 
+  /**
+   * Given an array of gamepieces, will populate an initialized board.
+   * @param {Array<GamePiece>} gamePieces array of gamepieces.
+   */
   _populateBoard(gamePieces) {
     for (let piece of gamePieces) {
-      const currentValue = this.board[piece.yPos][piece.xPos];
-      if (this._getIsValidCell(currentValue)) {
-        currentValue = piece.color;
-      }
+      this._addPiece(piece);
     }
   }
-
 
   _initializeBoard(boardSize, board) {
     this.board = board;
@@ -40,10 +40,16 @@ export default class GameBoard {
       }
       this.board.push(newRow);
     }
-    console.log(this.board);
   }
 
-  _getIsValidCell(currentValue) {
-    return Helpers.getIsPlayablePosition(currentValue);
+  /**
+   * Given a game piece, will attempt to add pieces to playable positions.
+   * @param {GamePiece} piece 
+   */
+  _addPiece(piece) {
+    let destinationCellValue = this.board[piece.yPos][piece.xPos];
+    if (Helpers.isPlayablePosition(destinationCellValue)) {
+      this.board[piece.yPos][piece.xPos] = piece.color;
+    }
   }
 };

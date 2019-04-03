@@ -1,7 +1,11 @@
 import GamePiece from "./game-piece";
 import GameBoard from "./game-board";
-import { COLORS_ENUM } from "./constants/colors.enum";
-import { BOARD_SIZE } from "./constants/board-size";
+import {
+  COLORS_ENUM
+} from "./constants/colors.enum";
+import {
+  BOARD_SIZE
+} from "./constants/board-size";
 import Helpers from "./helpers";
 
 /**
@@ -39,13 +43,13 @@ export default class CheckersChecker {
   constructor() {
     const newGamePiece = new GamePiece(1, 1, COLORS_ENUM.white, this._boardSize);
     this.gamePieces.push(newGamePiece);
-    this.gameBoard = new GameBoard(this._boardSize, this.gamePieces);
+    this.gameBoard = new GameBoard( this.gamePieces, this._boardSize);
   }
 
   /**
    * Given a board of type GameBoard, and a position (x,y), returns a multidimensional
    * array of valid moves that may be chained together.
-   * @param {Array<Array<number>} board return value of GameBoard constructor.
+   * @param {Array<Array<number>>} board return value of GameBoard constructor.
    * @param {Array<number>} position - [x, y].
    */
   getValidJumps(board, position) {
@@ -55,18 +59,41 @@ export default class CheckersChecker {
     const xPos = position[0];
     const yPos = position[1];
     const pointValue = board[xPos][yPos];
-    if (!Helpers.getIsPlayablePosition(pointValue)) {
-      return; 
+    if (!Helpers.isPlayablePosition(pointValue)) {
+      return;
     }
     if (pointValue === 0) {
       return [];
     }
-    this._getPotentialCells(board, position);
+    const potentialCells = this._getPotentialCells(board, position);
+    const opponentCells = this._filterOpponentCells(potentialCells, pointValue, board);
+  }
+
+  /**
+   * Given a 2d array of coordinates for cells potentially containing an opponent piece,
+   * returns 2d array of coordinates for cells absolutely containing an opponent piece.
+   * @param {Array<Array<number>>} potentialCells nested array of potential cells
+   * @param {number} playerValue the current player's value
+   * 
+   * NOTE: potentialCells is assumed to only contain playable positions.
+   */
+  _filterOpponentCells(potentialCells, playerValue, board) {
+    return potentialCells.filter((cell) => {
+      const xPos = cell[0];
+      const yPos = cell[1];
+      // console.log({cell, board});
+      const targetValue = board[xPos][yPos];
+
+      if (targetValue !== playerValue && !Helpers.isPositionEmpty(targetValue)) {
+        return true;
+      }
+      return false;
+    });
   }
 
   /**
    * Given a board of type GameBoard and a position [x,y], returns an array of [x,y] pairs to be considered.
-   * @param {Array<Array<number>} board return value of GameBoard constructor
+   * @param {Array<Array<number>>} board return value of GameBoard constructor
    * @param {Array<number>} position [x, y]
    */
   _getPotentialCells(board, position) {
@@ -74,7 +101,12 @@ export default class CheckersChecker {
     const xPos = position[0];
     const yPos = position[1];
 
-    const posModulations = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
+    const posModulations = [
+      [-1, -1],
+      [1, -1],
+      [1, 1],
+      [-1, 1]
+    ];
 
     posModulations.map((modulation) => {
       const xModulation = modulation[0];
@@ -84,14 +116,13 @@ export default class CheckersChecker {
 
       if (targetXPos > -1 && targetYPos > -1) {
         const targetValue = board[targetXPos][targetYPos];
-  
-        if (Helpers.getIsPlayablePosition(targetValue)) {
+
+        if (Helpers.isPlayablePosition(targetValue)) {
           potentialCells.push([targetXPos, targetYPos])
         }
       }
     });
-
-    console.log(potentialCells);
+    console.warn(potentialCells);
     return potentialCells;
   }
 
