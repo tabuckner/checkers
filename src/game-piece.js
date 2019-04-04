@@ -1,11 +1,11 @@
-import { COLORS_ENUM } from "./constants/colors.enum";
+import { CELL_VALUES_ENUM } from "./constants/cell-values.enum";
 import { BOARD_SIZE } from "./constants/board-size";
 
 export default class GamePiece {
   /**
    * @param {number} xPos 
    * @param {number} yPos 
-   * @param {string} color COLORS_ENUM
+   * @param {string} color CELL_VALUES_ENUM
    */
   constructor(xPos, yPos, color, boardSize = BOARD_SIZE) {
     this._boardSize = boardSize;
@@ -15,7 +15,7 @@ export default class GamePiece {
   }
 
   _checkColorParam(colorParam) {
-    if (Object.values(COLORS_ENUM).indexOf(colorParam) < 0) {
+    if (Object.values(CELL_VALUES_ENUM).indexOf(colorParam) < 0) {
       throw new Error('Color param provided is invalid. Must be `white` or `black`');
     }
     return colorParam;

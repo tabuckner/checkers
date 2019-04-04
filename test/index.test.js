@@ -1,7 +1,7 @@
 import CheckersChecker from '../src/index';
 import GameBoard from '../src/game-board';
 import GamePiece from '../src/game-piece';
-import { COLORS_ENUM } from '../src/constants/colors.enum';
+import { CELL_VALUES_ENUM } from '../src/constants/cell-values.enum';
 
 describe('CheckersChecker', () => {
   /** @type {CheckersChecker} */
@@ -46,7 +46,7 @@ describe('CheckersChecker', () => {
     it('should return an empty array if there are adjacent opponents', () => {
       spyOn(instance, '_getPotentialCells').and.returnValue(true);
       spyOn(instance, '_filterOpponentCells').and.returnValue([]);
-      const mockGamePiece = new GamePiece(0, 0, COLORS_ENUM.black);
+      const mockGamePiece = new GamePiece(0, 0, CELL_VALUES_ENUM.black);
       const mockBoard = new GameBoard([mockGamePiece]);
       const mockPosition = [0, 0];
       const testEval = instance.getValidJumps(mockBoard, mockPosition);
@@ -56,10 +56,10 @@ describe('CheckersChecker', () => {
     it('should return an array of nearbyOpponents and postJumpPosition', () => {
       const mockPieces = [];
       [[0,0], [0,2], [2,0], [2,2]].map((o) => {
-        const mockPiece = new GamePiece(o[0], o[1], COLORS_ENUM.white);
+        const mockPiece = new GamePiece(o[0], o[1], CELL_VALUES_ENUM.white);
         mockPieces.push(mockPiece);
       });
-      const playerPiece = new GamePiece(1, 1, COLORS_ENUM.black);
+      const playerPiece = new GamePiece(1, 1, CELL_VALUES_ENUM.black);
       mockPieces.push(playerPiece);
       console.warn(mockPieces);
       const mockBoard = new GameBoard(mockPieces, 4);
@@ -92,8 +92,8 @@ describe('CheckersChecker', () => {
 
   describe('#_filterOpponentCells', () => {
     it('should return a filtered array', () => {
-      const mockPlayerPiece = new GamePiece(0, 0, COLORS_ENUM.white);
-      const mockOpponentPiece = new GamePiece(1, 1, COLORS_ENUM.black);
+      const mockPlayerPiece = new GamePiece(0, 0, CELL_VALUES_ENUM.white);
+      const mockOpponentPiece = new GamePiece(1, 1, CELL_VALUES_ENUM.black);
       const mockBoard = new GameBoard([mockPlayerPiece, mockOpponentPiece]);
       const mockPlayerPosition = [0,0];
       const mockPlayerValue = mockBoard[0][0];
@@ -104,7 +104,7 @@ describe('CheckersChecker', () => {
     });
 
     it('should return an empty array if no opponents available', () => {
-      const mockPlayerPiece = new GamePiece(0, 0, COLORS_ENUM.white);
+      const mockPlayerPiece = new GamePiece(0, 0, CELL_VALUES_ENUM.white);
       const mockBoard = new GameBoard([mockPlayerPiece]);
       const mockPlayerPosition = [0,0];
       const mockPlayerValue = mockBoard[0][0];

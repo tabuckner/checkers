@@ -1,5 +1,5 @@
 import GamePiece from "./game-piece";
-import { COLORS_ENUM } from "./constants/colors.enum";
+import { CELL_VALUES_ENUM } from "./constants/cell-values.enum";
 import { BOARD_SIZE } from "./constants/board-size";
 import Helpers from "./helpers";
 
@@ -32,7 +32,7 @@ export default class GameBoard {
       const newRow = [];
       const reverse = i % 2 == 0 ? true : false;
       for (let j = 0; j < boardSize; j++) {
-        const pushVal = j % 2 !== 0 ? COLORS_ENUM.empty : COLORS_ENUM.locked;
+        const pushVal = j % 2 !== 0 ? CELL_VALUES_ENUM.empty : CELL_VALUES_ENUM.locked;
         newRow.push(pushVal);
       }
       if (reverse) {

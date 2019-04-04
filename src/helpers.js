@@ -1,4 +1,4 @@
-import { COLORS_ENUM } from "./constants/colors.enum";
+import { CELL_VALUES_ENUM } from "./constants/cell-values.enum";
 
 export default class Helpers {
   /**
@@ -6,7 +6,7 @@ export default class Helpers {
    * @param {number} positionValue the value at a given [x,y] position
    */
   static isPlayablePosition(positionValue) {
-    if (positionValue === COLORS_ENUM.locked) {
+    if (positionValue === CELL_VALUES_ENUM.locked) {
       throw new Error('Cannot place a GamePiece at this position');
     }
     return true;
@@ -17,7 +17,7 @@ export default class Helpers {
    * @param {number} positionValue the value at a give [x,y] position
    */
   static isPositionEmpty(positionValue) {
-    return positionValue === COLORS_ENUM.empty;
+    return positionValue === CELL_VALUES_ENUM.empty;
   }
 
   /**

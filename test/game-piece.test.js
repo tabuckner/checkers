@@ -1,5 +1,5 @@
 import GamePiece from '../src/game-piece';
-import { COLORS_ENUM } from '../src/constants/colors.enum';
+import { CELL_VALUES_ENUM } from '../src/constants/cell-values.enum';
 import { BOARD_SIZE } from '../src/constants/board-size';
 
 describe('GamePiece', () => {
@@ -8,7 +8,7 @@ describe('GamePiece', () => {
   const mockData = {
     xPos: 1,
     yPos: 2,
-    color: COLORS_ENUM.black
+    color: CELL_VALUES_ENUM.black
   }
 
   beforeEach(() => {
@@ -47,8 +47,8 @@ describe('GamePiece', () => {
 
     it('should set valid strings', () => {
       const spy = jest.spyOn(GamePiece.prototype, '_checkColorParam');
-      const localInstance = new GamePiece(2, 3, COLORS_ENUM.white);
-      expect(spy).toHaveBeenCalledWith(COLORS_ENUM.white);
+      const localInstance = new GamePiece(2, 3, CELL_VALUES_ENUM.white);
+      expect(spy).toHaveBeenCalledWith(CELL_VALUES_ENUM.white);
     });
   });
 
@@ -56,7 +56,7 @@ describe('GamePiece', () => {
     it('should throw error for coords out of bounds', () => {
       const outOfBounds = BOARD_SIZE + 1;
       expect(() => {
-        new GamePiece(outOfBounds, outOfBounds, COLORS_ENUM.white);
+        new GamePiece(outOfBounds, outOfBounds, CELL_VALUES_ENUM.white);
       }).toThrow();
     });
 
