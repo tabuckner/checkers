@@ -1,6 +1,0 @@
-Things I want to change:
-- Boardsize is a constant.
-- Method to get x and y pos from a coordinate set
-- type for coordinates?
-- Change helper methods to accept a POSITION and not a value.
-- Remove all console.XXX statements.
