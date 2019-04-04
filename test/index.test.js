@@ -78,7 +78,8 @@ describe('CheckersChecker', () => {
     it('should return a list of potentials', () => {
       const mockBoard = new GameBoard();
       const mockPosition = [0, 0];
-      const testEval = instance._getPotentialCells(mockBoard, mockPosition);
+      instance._gameBoard = mockBoard;
+      const testEval = instance._getPotentialCells(mockPosition);
       expect(testEval.length).toBe(1);
       expect(testEval[0]).toEqual(expect.arrayContaining([1, 1]))
     });
@@ -86,7 +87,8 @@ describe('CheckersChecker', () => {
     it('should return a longer list of potentials', () => {
       const mockBoard = new GameBoard();
       const mockPosition = [1, 1];
-      const testEval = instance._getPotentialCells(mockBoard, mockPosition);
+      instance._gameBoard = mockBoard;
+      const testEval = instance._getPotentialCells(mockPosition);
       expect(testEval.length).toBe(4);
       expect(testEval[0]).toEqual(expect.arrayContaining([0, 0]))
       expect(testEval[1]).toEqual(expect.arrayContaining([2, 0]))
@@ -100,10 +102,11 @@ describe('CheckersChecker', () => {
       const mockPlayerPiece = new GamePiece(0, 0, CELL_VALUES_ENUM.white);
       const mockOpponentPiece = new GamePiece(1, 1, CELL_VALUES_ENUM.black);
       const mockBoard = new GameBoard([mockPlayerPiece, mockOpponentPiece]);
+      instance._gameBoard = mockBoard;
       const mockPlayerPosition = [0,0];
       const mockPlayerValue = mockBoard[0][0];
-      const mockPotentialCells = instance._getPotentialCells(mockBoard, mockPlayerPosition);
-      const testEval = instance._filterOpponentCells(mockPotentialCells, mockPlayerValue, mockBoard);
+      const mockPotentialCells = instance._getPotentialCells(mockPlayerPosition);
+      const testEval = instance._filterOpponentCells(mockPotentialCells, mockPlayerValue);
       expect(testEval.length).toBe(1);
       expect(testEval[0]).toEqual(expect.arrayContaining([1, 1]));
     });
@@ -111,10 +114,11 @@ describe('CheckersChecker', () => {
     it('should return an empty array if no opponents available', () => {
       const mockPlayerPiece = new GamePiece(0, 0, CELL_VALUES_ENUM.white);
       const mockBoard = new GameBoard([mockPlayerPiece]);
+      instance._boardSize = mockBoard;
       const mockPlayerPosition = [0,0];
       const mockPlayerValue = mockBoard[0][0];
       const mockPotentialCells = instance._getPotentialCells(mockBoard, mockPlayerPosition);
-      const testEval = instance._filterOpponentCells(mockPotentialCells, mockPlayerValue, mockBoard);
+      const testEval = instance._filterOpponentCells(mockPotentialCells, mockPlayerValue);
       expect(testEval.length).toBe(0)
     })
   });

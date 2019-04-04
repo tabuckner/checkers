@@ -1,4 +1,3 @@
-import GamePiece from "./game-piece";
 import GameBoard from "./game-board";
 import Helpers from "./helpers";
 import { BOARD_SIZE } from "./constants/board-size";
@@ -46,8 +45,9 @@ export default class CheckersChecker {
     if (!board || !position) {
       throw new Error('Board and Position must be provided.')
     }
+    this._gameBoard = board;
     const returnArray = [];
-    const pointValue = Helpers.getPointValue(board, position); // TODO: Change helpers to accept position.
+    const pointValue = Helpers.getPointValue(this._gameBoard, position); // TODO: Change helpers to accept position.
 
     if (!Helpers.isPlayablePosition(pointValue)) {
       return;
@@ -57,13 +57,13 @@ export default class CheckersChecker {
       return returnArray;
     }
 
-    const adjacentOpponentCells = this._getAdjacentOpponentCells(board, position);
+    const adjacentOpponentCells = this._getAdjacentOpponentCells(position);
     if (adjacentOpponentCells.length === 0) {
       return returnArray;
     }
 
     this._populateJumpOptions(adjacentOpponentCells, position, returnArray);
-    console.log(returnArray) // HERE.
+    console.log(returnArray);
     return returnArray;
   }
 
@@ -116,13 +116,12 @@ export default class CheckersChecker {
   /**
    * Given a GameBoard and position, returns 2d array of coordinates for cells
    * containing an opponent piece.
-   * @param {GameBoard} board 
    * @param {Array<number>} position [x,y] coords
    */
-  _getAdjacentOpponentCells(board, position) {
-    const pointValue = Helpers.getPointValue(board, position);
-    const potentialCells = this._getPotentialCells(board, position);
-    return this._filterOpponentCells(potentialCells, pointValue, board);
+  _getAdjacentOpponentCells(position) {
+    const pointValue = Helpers.getPointValue(this._gameBoard, position);
+    const potentialCells = this._getPotentialCells(position);
+    return this._filterOpponentCells(potentialCells, pointValue);
   }
 
   /**
@@ -130,15 +129,14 @@ export default class CheckersChecker {
    * returns 2d array of coordinates for cells absolutely containing an opponent piece.
    * @param {Array<Array<number>>} potentialCells nested array of potential cells
    * @param {number} playerValue the current player's value
-   * @param {GameBoard} board the game board
    * 
    * NOTE: potentialCells is assumed to only contain playable positions.
    */
-  _filterOpponentCells(potentialCells, playerValue, board) {
+  _filterOpponentCells(potentialCells, playerValue) {
     return potentialCells.filter((cell) => {
       const xPos = cell[0];
       const yPos = cell[1];
-      const targetValue = board[xPos][yPos];
+      const targetValue = this._gameBoard[xPos][yPos];
 
       if (targetValue !== playerValue && !Helpers.isPositionEmpty(targetValue)) {
         return true;
@@ -148,11 +146,10 @@ export default class CheckersChecker {
   }
 
   /**
-   * Given a board of type GameBoard and a position [x,y], returns an array of [x,y] pairs to be considered.
-   * @param {Array<Array<number>>} board return value of GameBoard constructor
+   * Given a position [x,y], returns an array of [x,y] coordinates for valid player moves.
    * @param {Array<number>} position [x, y]
    */
-  _getPotentialCells(board, position) {
+  _getPotentialCells(position) {
     const potentialCells = [];
     const xPos = position[0];
     const yPos = position[1];
@@ -171,7 +168,7 @@ export default class CheckersChecker {
       const targetYPos = yPos + yModulation;
 
       if (targetXPos > -1 && targetYPos > -1) {
-        const targetValue = board[targetXPos][targetYPos];
+        const targetValue = this._gameBoard[targetXPos][targetYPos];
 
         if (Helpers.isPlayablePosition(targetValue)) {
           potentialCells.push([targetXPos, targetYPos])

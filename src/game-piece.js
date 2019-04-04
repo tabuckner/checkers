@@ -3,8 +3,8 @@ import { BOARD_SIZE } from "./constants/board-size";
 
 export default class GamePiece {
   /**
-   * @param {number} xPos 
-   * @param {number} yPos 
+   * @param {number} xPos x coordinate
+   * @param {number} yPos y coordinate
    * @param {string} color CELL_VALUES_ENUM
    */
   constructor(xPos, yPos, color, boardSize = BOARD_SIZE) {
