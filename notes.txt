@@ -1,5 +1,5 @@
 Things I want to change:
-- Boardsize should be checked and set
+- Boardsize is a constant.
 - Method to get x and y pos from a coordinate set
 - type for coordinates?
 - Move gameboard to class property on CheckersChecker

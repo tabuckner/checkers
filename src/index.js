@@ -31,8 +31,6 @@ import { BOARD_SIZE } from "./constants/board-size";
 
 export default class CheckersChecker {
   _boardSize = BOARD_SIZE;
-  /** @type {Array<GamePiece>} */
-  gamePieces = []; // TODO: remove this?
   /** @type {GameBoard} */
   _gameBoard;
 

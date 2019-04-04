@@ -55,8 +55,9 @@ describe('CheckersChecker', () => {
 
     it('should return an array of nearbyOpponents and postJumpPosition', () => {
       const mockPieces = [];
-      [[0,0], [0,2], [2,0], [2,2]].map((o) => {
-        const mockPiece = new GamePiece(o[0], o[1], CELL_VALUES_ENUM.white);
+      const mockPiecePositions = [[0, 0], [0, 2], [2, 0], [2, 2]];
+      mockPiecePositions.map((o) => {
+        const mockPiece = new GamePiece(o[0], o[1], CELL_VALUES_ENUM.white, mockPiecePositions.length);
         mockPieces.push(mockPiece);
       });
       const playerPiece = new GamePiece(1, 1, CELL_VALUES_ENUM.black);
