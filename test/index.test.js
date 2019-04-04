@@ -17,10 +17,6 @@ describe('CheckersChecker', () => {
     it('Can be instantiated.', () => {
       expect(instance).toBeInstanceOf(CheckersChecker);
     });
-  
-    it('has a `gamePieces` prop', () => {
-      expect(instance.gamePieces.length).toBe(1);
-    });
   });
 
   describe('#getValidJumps', () => {

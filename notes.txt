@@ -1,0 +1,6 @@
+Things I want to change:
+- Boardsize should be checked and set
+- Method to get x and y pos from a coordinate set
+- type for coordinates?
+- Move gameboard to class property on CheckersChecker
+- Change helper methods to accept a POSITION and not a value.

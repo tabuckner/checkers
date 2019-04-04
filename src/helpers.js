@@ -33,4 +33,13 @@ export default class Helpers {
     }
     return false;
   }
+
+  /**
+   * Given a board and point, returns the value at that coordinate.
+   * @param {GameBoard} board 
+   * @param {Array<number>} point [x,y] coords
+   */
+  static getPointValue(board, point) {
+    return board[point[0]][point[1]];
+  }
 }

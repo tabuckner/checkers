@@ -1,6 +1,5 @@
 import GamePiece from "./game-piece";
 import GameBoard from "./game-board";
-import { COLORS_ENUM } from "./constants/colors.enum";
 import Helpers from "./helpers";
 import { BOARD_SIZE } from "./constants/board-size";
 
@@ -33,68 +32,99 @@ import { BOARD_SIZE } from "./constants/board-size";
 export default class CheckersChecker {
   _boardSize = BOARD_SIZE;
   /** @type {Array<GamePiece>} */
-  gamePieces = [];
+  gamePieces = []; // TODO: remove this?
   /** @type {GameBoard} */
-  gameBoard;
+  _gameBoard;
 
-  constructor() {
-    const newGamePiece = new GamePiece(1, 1, COLORS_ENUM.white, this._boardSize);
-    this.gamePieces.push(newGamePiece);
-    this.gameBoard = new GameBoard( this.gamePieces, this._boardSize);
-  }
+  constructor() {}
 
   /**
    * Given a board of type GameBoard, and a position (x,y), returns a multidimensional
    * array of valid moves that may be chained together.
    * @param {Array<Array<number>>} board return value of GameBoard constructor.
-   * @param {Array<number>} position - [x, y].
+   * @param {Array<number>} position - [x,y]. // TODO: Use `Set` instead of array for O(1) time comp.
    */
   getValidJumps(board, position) {
     if (!board || !position) {
       throw new Error('Board and Position must be provided.')
     }
     const returnArray = [];
-    const xPos = position[0];
-    const yPos = position[1];
-    const pointValue = board[xPos][yPos];
+    const pointValue = Helpers.getPointValue(board, position); // TODO: Change helpers to accept position.
+
     if (!Helpers.isPlayablePosition(pointValue)) {
       return;
     }
-    if (pointValue === 0) {
+
+    if (Helpers.isPositionEmpty(pointValue)) {
       return returnArray;
     }
-    const potentialCells = this._getPotentialCells(board, position);
-    const adjacentOpponentCells = this._filterOpponentCells(potentialCells, pointValue, board);
+
+    const adjacentOpponentCells = this._getAdjacentOpponentCells(board, position);
     if (adjacentOpponentCells.length === 0) {
       return returnArray;
     }
 
+    this._populateJumpOptions(adjacentOpponentCells, position, returnArray);
+    console.log(returnArray)
+    return returnArray;
+  }
+
+  /**
+   * Given an array of adjacentOpponentCells, a player's position, and an empty array,
+   * will populate the empty array with options of 'jumps' in the following signature:
+   * 
+   * [ [[opponentX,opponentY], [postJumpX,postJumpY]], ... ]
+   * 
+   * @param {Array<Array<number>>} adjacentOpponentCells 2d array of coordinates of adjacent opponents
+   * @param {Array<number>} playerCoords player's coordinates [x,y]
+   * @param {Array<undefined>} returnArray empty array to be populated.
+   */
+  _populateJumpOptions(adjacentOpponentCells, playerCoords, returnArray) {
+
     for (let adjacentOpponentCell of adjacentOpponentCells) {
-      console.log(adjacentOpponentCell);
       const optionArray = [];
       // get postJumpPosition coordinates
-      const opponentXPos = adjacentOpponentCell[0];
-      const opponentYPos = adjacentOpponentCell[1];
-      const postJumpXPos = ((opponentXPos - xPos) * 2) + xPos;
-      const postJumpyPos = ((opponentYPos - yPos) * 2) + yPos;
-      const postJumpCoords = [postJumpXPos, postJumpyPos];
-      const postJumpIsOutOfBounds = Helpers.isPositionOutOfBounds(postJumpCoords, this._boardSize);
-      console.log({postJumpIsOutOfBounds, postJumpCoords})
-
+      const postJumpCoords = this._getPostJumpCoordinates(playerCoords, adjacentOpponentCell);
       // if the postJumpPosition is out of bounds do nothing
+      const postJumpIsOutOfBounds = Helpers.isPositionOutOfBounds(postJumpCoords, this._boardSize);
       if (!postJumpIsOutOfBounds) {
         // push opponentCell onto optionArray
         optionArray.push(adjacentOpponentCell);
-        console.log({optionArray});
         // push it onto the options array
         optionArray.push(postJumpCoords);
-        console.log({optionArray});
         // push onto return array
         returnArray.push(optionArray);
       }
     }
-    console.log(returnArray)
-    return returnArray;
+  }
+
+  /**
+   * Given a player position, and opponent position, will return `post-jump` coordinates.
+   * @param {Array<number>} playerPosition players [x,y] coordinates
+   * @param {Array<number>} opponentPosition players [x,y] coordinates
+   */
+  _getPostJumpCoordinates(playerPosition, opponentPosition) {
+    const jumpOver = (p, o) => ((o - p) * 2) + p;
+    const playerXPos = playerPosition[0];
+    const playerYPos = playerPosition[1];
+    const opponentXPos = opponentPosition[0];
+    const opponentYPos = opponentPosition[1];
+    const postJumpXPos = jumpOver(playerXPos, opponentXPos);
+    const postJumpYPos = jumpOver(playerYPos, opponentYPos);
+    const postJumpCoords = [postJumpXPos, postJumpYPos];
+    return postJumpCoords;
+  }
+
+  /**
+   * Given a GameBoard and position, returns 2d array of coordinates for cells
+   * containing an opponent piece.
+   * @param {GameBoard} board 
+   * @param {Array<number>} position [x,y] coords
+   */
+  _getAdjacentOpponentCells(board, position) {
+    const pointValue = Helpers.getPointValue(board, position);
+    const potentialCells = this._getPotentialCells(board, position);
+    return this._filterOpponentCells(potentialCells, pointValue, board);
   }
 
   /**
@@ -102,6 +132,7 @@ export default class CheckersChecker {
    * returns 2d array of coordinates for cells absolutely containing an opponent piece.
    * @param {Array<Array<number>>} potentialCells nested array of potential cells
    * @param {number} playerValue the current player's value
+   * @param {GameBoard} board the game board
    * 
    * NOTE: potentialCells is assumed to only contain playable positions.
    */
@@ -109,7 +140,6 @@ export default class CheckersChecker {
     return potentialCells.filter((cell) => {
       const xPos = cell[0];
       const yPos = cell[1];
-      // console.log({cell, board});
       const targetValue = board[xPos][yPos];
 
       if (targetValue !== playerValue && !Helpers.isPositionEmpty(targetValue)) {
@@ -150,7 +180,6 @@ export default class CheckersChecker {
         }
       }
     });
-    console.warn(potentialCells);
     return potentialCells;
   }
 
