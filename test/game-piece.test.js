@@ -41,7 +41,7 @@ describe('GamePiece', () => {
 
     it('should throw an error for invalid strings', () => {
       expect(() => {
-        new GamePiece(2, 3, 'grey')
+        new GamePiece(2, 3, 'grey');
       }).toThrow();
     });
 

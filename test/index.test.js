@@ -2,6 +2,7 @@ import CheckersChecker from '../src/index';
 import GameBoard from '../src/game-board';
 import GamePiece from '../src/game-piece';
 import { CELL_VALUES_ENUM } from '../src/constants/cell-values.enum';
+import Helpers from '../src/helpers';
 
 describe('CheckersChecker', () => {
   /** @type {CheckersChecker} */
@@ -12,11 +13,9 @@ describe('CheckersChecker', () => {
     expect(instance).toBeDefined();
   });
 
-  describe('some tests', () => {
-  
-    it('Can be instantiated.', () => {
-      expect(instance).toBeInstanceOf(CheckersChecker);
-    });
+  it('Can be instantiated.', () => {
+    expect(instance).toBeDefined();
+    expect(instance).toBeInstanceOf(CheckersChecker);
   });
 
   describe('#getValidJumps', () => {
@@ -74,26 +73,58 @@ describe('CheckersChecker', () => {
     });
   });
 
-  describe('#_getPotentialCells', () => {
-    it('should return a list of potentials', () => {
-      const mockBoard = new GameBoard();
-      const mockPosition = [0, 0];
-      instance._gameBoard = mockBoard;
-      const testEval = instance._getPotentialCells(mockPosition);
-      expect(testEval.length).toBe(1);
-      expect(testEval[0]).toEqual(expect.arrayContaining([1, 1]))
+  describe('#_populateJumpOptions', () => {
+    it('should call post jump coordinates', () => {
+      const mockAdjacentOpponentCells = [1];
+      spyOn(instance, '_getPostJumpCoordinates').and.returnValue(true);
+      spyOn(Helpers, 'isPositionOutOfBounds').and.returnValue(true);
+      instance._populateJumpOptions(mockAdjacentOpponentCells, [0,0], []);
+      expect(instance._getPostJumpCoordinates).toHaveBeenCalled();
     });
 
-    it('should return a longer list of potentials', () => {
-      const mockBoard = new GameBoard();
-      const mockPosition = [1, 1];
-      instance._gameBoard = mockBoard;
-      const testEval = instance._getPotentialCells(mockPosition);
-      expect(testEval.length).toBe(4);
-      expect(testEval[0]).toEqual(expect.arrayContaining([0, 0]))
-      expect(testEval[1]).toEqual(expect.arrayContaining([2, 0]))
-      expect(testEval[2]).toEqual(expect.arrayContaining([2, 2]))
-      expect(testEval[3]).toEqual(expect.arrayContaining([0, 2]))
+    it('should push valid options onto provided array', () => {
+      const mockAdjacentOpponentCells = [1];
+      spyOn(instance, '_getPostJumpCoordinates').and.returnValue(true);
+      spyOn(Helpers, 'isPositionOutOfBounds').and.returnValue(false);
+      const mockReturnArray = [];
+      instance._populateJumpOptions(mockAdjacentOpponentCells, [0,0], mockReturnArray);
+      expect(instance._getPostJumpCoordinates).toHaveBeenCalled();
+      expect(mockReturnArray[0][0]).toBe(1);
+      expect(mockReturnArray[0][1]).toBe(true);
+    });
+  });
+
+  describe('#_getPostJumpCoordinates', () => {
+    it('should return post jump coordinates', () => {
+      const mockPlayerPosition = [1,1];
+      const mockOpponentPosition = [2,2];
+      const testEval = instance._getPostJumpCoordinates(mockPlayerPosition, mockOpponentPosition);
+      expect(testEval[0]).toBe(3);
+      expect(testEval[0]).toBe(3);
+    });
+  });
+
+  describe('#_getAdjacentOpponentCells', () => {
+    let mockPosition;
+    beforeEach(() => {
+      mockPosition = [0,0];
+      instance._gameBoard = 1;
+      spyOn(Helpers, 'getPointValue').and.returnValue(true);
+      spyOn(instance, '_getPotentialCells').and.returnValue(true);
+      spyOn(instance, '_filterOpponentCells').and.returnValue(true);
+      instance._getAdjacentOpponentCells(mockPosition);
+    });
+
+    it('should get the players point value', () => {
+      expect(Helpers.getPointValue).toHaveBeenCalledWith(instance._gameBoard, mockPosition);
+    });
+
+    it('should get potential cells with position', () => {
+      expect(instance._getPotentialCells).toHaveBeenCalledWith(mockPosition);
+    });
+
+    it('should filter those cells', () => {
+      expect(instance._filterOpponentCells).toHaveBeenCalledWith(true, true);
     });
   });
 
@@ -122,4 +153,28 @@ describe('CheckersChecker', () => {
       expect(testEval.length).toBe(0)
     })
   });
+
+  describe('#_getPotentialCells', () => {
+    it('should return a list of potentials', () => {
+      const mockBoard = new GameBoard();
+      const mockPosition = [0, 0];
+      instance._gameBoard = mockBoard;
+      const testEval = instance._getPotentialCells(mockPosition);
+      expect(testEval.length).toBe(1);
+      expect(testEval[0]).toEqual(expect.arrayContaining([1, 1]))
+    });
+
+    it('should return a longer list of potentials', () => {
+      const mockBoard = new GameBoard();
+      const mockPosition = [1, 1];
+      instance._gameBoard = mockBoard;
+      const testEval = instance._getPotentialCells(mockPosition);
+      expect(testEval.length).toBe(4);
+      expect(testEval[0]).toEqual(expect.arrayContaining([0, 0]))
+      expect(testEval[1]).toEqual(expect.arrayContaining([2, 0]))
+      expect(testEval[2]).toEqual(expect.arrayContaining([2, 2]))
+      expect(testEval[3]).toEqual(expect.arrayContaining([0, 2]))
+    });
+  });
+
 });
