@@ -67,6 +67,10 @@ describe('CheckersChecker', () => {
       console.warn(mockBoard);
       const testEval = instance.getValidJumps(mockBoard, [1, 1], 4);
       console.warn(testEval);
+      expect(testEval.length).toBe(1);
+      expect(testEval[0].length).toBe(2);
+      expect(testEval[0][0]).toEqual(expect.arrayContaining([2,2]));
+      expect(testEval[0][1]).toEqual(expect.arrayContaining([3,3]));
     });
   });
 

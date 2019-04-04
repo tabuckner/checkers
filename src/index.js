@@ -63,7 +63,7 @@ export default class CheckersChecker {
     }
 
     this._populateJumpOptions(adjacentOpponentCells, position, returnArray);
-    console.log(returnArray)
+    console.log(returnArray) // HERE.
     return returnArray;
   }
 
