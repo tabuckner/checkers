@@ -1,4 +1,4 @@
-import CheckersChecker from '../src/index';
+import CheckersChecker from '../src/checkers-checker';
 import GameBoard from '../src/game-board';
 import GamePiece from '../src/game-piece';
 import { CELL_VALUES_ENUM } from '../src/constants/cell-values.enum';
@@ -61,11 +61,8 @@ describe('CheckersChecker', () => {
       });
       const playerPiece = new GamePiece(1, 1, CELL_VALUES_ENUM.black);
       mockPieces.push(playerPiece);
-      console.warn(mockPieces);
       const mockBoard = new GameBoard(mockPieces, 4);
-      console.warn(mockBoard);
       const testEval = instance.getValidJumps(mockBoard, [1, 1], 4);
-      console.warn(testEval);
       expect(testEval.length).toBe(1);
       expect(testEval[0].length).toBe(2);
       expect(testEval[0][0]).toEqual(expect.arrayContaining([2,2]));
